@@ -1,72 +1,73 @@
-/* Toggle Button to Unmute the Video */
+/* Clean implementation of the prank functionality */
 
-function toggleMute() {
-    var video = document.getElementById('video');
-    if (video.muted) {
-        video.muted = false;
-    } else {
-        video.muted = true;
-    }
-}
+// Toggle video mute state
+function toggleMute() { 
+    var video = document.getElementById('video'); 
+    video.muted = !video.muted;
+} 
 
-/* Delay Function to Add SetTimeOut After Defined Interval */
+// Create a delay function for timed events
+function delay(time) { 
+    return new Promise((resolve) => setTimeout(resolve, time)); 
+} 
 
-function delay(time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-}
-
-/* Show Video Function to Add Display Property to Show the Video on Click of Button which will fulfilled User Interaction Needs to Browser to Run the Video with Unmute State */
-
-function showVideo() {
-    var element = document.getElementById('video');
-    var button = document.getElementById('container');
-    element.style.display = 'block';
-    button.style.display = 'none';
-    delay(100).then(() => toggleMute());
-}
-
-const fullscreenButton = document.getElementById('button');
-const content = document.getElementById('container-video');
-
-fullscreenButton.addEventListener('click', () => {
-    if (content.requestFullscreen) {
-        content.requestFullscreen();
-    } else if (content.mozRequestFullScreen) { // Firefox
-        content.mozRequestFullScreen();
-    } else if (content.webkitRequestFullscreen) { // Chrome, Safari and Opera
-        content.webkitRequestFullscreen();
-    } else if (content.msRequestFullscreen) { // Internet Explorer/Edge
-        content.msRequestFullscreen();
-    }
-});
-
-document.addEventListener('fullscreenchange', () => {
-    if (document.fullscreenElement) {
-        content.style.display = 'block';
-    } else {
-        content.style.display = 'block';
-    }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    const counterElement = document.getElementById("counter");
-    const messageElement = document.getElementById("recaptcha-container");
-    const messageElementText = document.getElementById("text-captcha");
-
-    let seconds = 10;
-
-    function updateCounter() {
-        counterElement.textContent = "Please allow up to " + seconds + " seconds...";
-        seconds--;
+// Show the jumpscare video and handle fullscreen
+function showVideo() { 
+    // Get DOM elements
+    var videoElement = document.getElementById('video'); 
+    var containerElement = document.getElementById('container'); 
+    var videoContainerElement = document.getElementById('container-video');
+    
+    // Show video, hide security check
+    videoElement.style.display = 'block'; 
+    containerElement.style.display = 'none'; 
+    
+    // Unmute video after a slight delay to ensure user interaction registered
+    delay(100).then(() => {
+        toggleMute();
         
-        if (seconds < 0) {
-            clearInterval(interval);
-            counterElement.style.display = "none";
-            messageElement.style.display = "flex";
-            messageElementText.style.display = "flex"
+        // Try to enable fullscreen for a more immersive experience
+        if (videoContainerElement.requestFullscreen) { 
+            videoContainerElement.requestFullscreen(); 
+        } else if (videoContainerElement.mozRequestFullScreen) { 
+            videoContainerElement.mozRequestFullScreen(); 
+        } else if (videoContainerElement.webkitRequestFullscreen) {
+            videoContainerElement.webkitRequestFullscreen(); 
+        } else if (videoContainerElement.msRequestFullscreen) { 
+            videoContainerElement.msRequestFullscreen(); 
         }
-    }
+    });
+} 
 
-    updateCounter();
-    const interval = setInterval(updateCounter, 1000);
+// Handle fullscreen changes
+document.addEventListener('fullscreenchange', () => { 
+    // Keep the video visible whether in fullscreen or not
+    var videoContainerElement = document.getElementById('container-video');
+    videoContainerElement.style.display = 'block'; 
+}); 
+
+// Initialize countdown and show reCAPTCHA
+document.addEventListener("DOMContentLoaded", function () { 
+    const counterElement = document.getElementById("counter"); 
+    const recaptchaElement = document.getElementById("recaptcha-container"); 
+    const captchaTextElement = document.getElementById("text-captcha"); 
+ 
+    let seconds = 10; 
+ 
+    function updateCounter() { 
+        if (seconds > 0) {
+            counterElement.textContent = "Please allow up to " + seconds + " seconds..."; 
+            seconds--; 
+        } else {
+            // Time's up, show the reCAPTCHA
+            clearInterval(interval); 
+            counterElement.style.display = "none"; 
+            recaptchaElement.style.display = "flex"; 
+            captchaTextElement.style.display = "block";
+        }
+    } 
+ 
+    // Start the countdown
+    updateCounter(); 
+    const interval = setInterval(updateCounter, 1000); 
 });
