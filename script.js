@@ -58,30 +58,6 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateCounter() {
         counterElement.textContent = "Please allow up to " + seconds + " seconds...";
         seconds--;
-
-        if (seconds <7) {
-            document.body.style.backgroundColor = "#0C0C0C"
-            document.body.style.color = "red"
-            document.body.style.fontFamily = "Bungee Tint, sans-serif"
-        }
-
-        if (seconds < 6) {
-            document.body.style.backgroundColor = "#ffffff"
-            document.body.style.color = "#000000"
-            document.body.style.fontFamily = "Roboto, sans-serif"
-        }
-
-        if (seconds < 3) {
-            document.body.style.backgroundColor = "#0C0C0C"
-            document.body.style.color = "red"
-            document.body.style.fontFamily = "Bungee Tint, sans-serif"
-        }
-
-        if (seconds < 2) {
-            document.body.style.backgroundColor = "#ffffff"
-            document.body.style.color = "#000000"
-            document.body.style.fontFamily = "Roboto, sans-serif"
-        }
         
         if (seconds < 0) {
             clearInterval(interval);
